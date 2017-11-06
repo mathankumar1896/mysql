@@ -1,0 +1,1205 @@
+select * from salespeople;
++------+---------+-----------+------+
+| snum | sname   | city      | comm |
++------+---------+-----------+------+
+| 1001 | Peel    | London    | 0.12 |
+| 1002 | Serres  | San Jose  | 0.13 |
+| 1003 | AxelRod | New York  | 0.10 |
+| 1004 | Motika  | London    | 0.11 |
+| 1005 | Fran    | London    | 0.26 |
+| 1007 | Rifkin  | Barcelona | 0.15 |
++------+---------+-----------+------+
+6 rows in set (0.00 sec)
+
+
+select * from customer
++------+----------+----------+--------+------+
+| cnum | cname    | city     | rating | snum |
++------+----------+----------+--------+------+
+| 2001 | Hoffman  | London   |    100 | 1001 |
+| 2002 | Giovanni | Rome     |    200 | 1003 |
+| 2003 | Liu San  | Jose     |    200 | 1002 |
+| 2004 | Grass    | Berlin   |    300 | 1002 |
+| 2006 | Clemens  | London   |    100 | 1001 |
+| 2007 | Pereira  | Rome     |    100 | 1004 |
+| 2008 | Cisneros | San Jose |    300 | 1007 |
++------+----------+----------+--------+------+
+7 rows in set (0.00 sec)
+
+
+select * from orders;
++------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3001 |   18.69 | 1996-10-03 | 2008 |
+| 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 3003 |  767.19 | 1996-10-03 | 2001 |
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
+| 3006 | 1098.16 | 1996-10-03 | 2008 |
+| 3007 |   75.75 | 1996-10-04 | 2002 |
+| 3008 | 4723.00 | 1996-10-05 | 2006 |
+| 3009 | 1713.23 | 1996-10-04 | 2002 |
+| 3010 | 1309.95 | 1996-10-06 | 2004 |
+| 3011 | 9891.88 | 1996-10-06 | 2006 |
++------+---------+------------+------+
+10 rows in set (0.00 sec)
+
+1. mysql> describe salespeople;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| snum  | int(11)      | NO   | PRI | NULL    |       |
+| sname | varchar(30)  | NO   |     | NULL    |       |
+| city  | varchar(30)  | NO   |     | NULL    |       |
+| comm  | decimal(4,2) | NO   |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+1.....mysql> select *from customer where rating=100;
++------+---------+--------+--------+------+
+| cnum | cname   | city   | rating | snum |
++------+---------+--------+--------+------+
+| 2001 | Hoffman | London |    100 | 1001 |
+| 2006 | Clemens | London |    100 | 1001 |
+| 2007 | Pereira | Rome   |    100 | 1004 |
++------+---------+--------+--------+------+
+
+2........mysql> select*from orders ORDER BY cnum DESC;
++------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3001 |   18.69 | 1996-10-03 | 2008 |
+| 3006 | 1098.16 | 1996-10-03 | 2008 |
+| 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 3008 | 4723.00 | 1996-10-05 | 2006 |
+| 3011 | 9891.88 | 1996-10-06 | 2006 |
+| 3010 | 1309.95 | 1996-10-06 | 2004 |
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
+| 3007 |   75.75 | 1996-10-04 | 2002 |
+| 3009 | 1713.23 | 1996-10-04 | 2002 |
+| 3003 |  767.19 | 1996-10-03 | 2001 |
++------+---------+------------+------+
+mysql> select *from salespeople a,customer b where a.snum=b.snum;
++------+---------+-----------+------+------+----------+----------+--------+------+
+| snum | sname   | city      | comm | cnum | cname    | city     | rating | snum |
++------+---------+-----------+------+------+----------+----------+--------+------+
+| 1001 | Peel    | London    | 0.12 | 2001 | Hoffman  | London   |    100 | 1001 |
+| 1001 | Peel    | London    | 0.12 | 2006 | Clemens  | London   |    100 | 1001 |
+| 1002 | Serres  | San Jose  | 0.13 | 2003 | Liu San  | Jose     |    200 | 1002 |
+| 1002 | Serres  | San Jose  | 0.13 | 2004 | Grass    | Berlin   |    300 | 1002 |
+| 1003 | AxelRod | New York  | 0.10 | 2002 | Giovanni | Rome     |    200 | 1003 |
+| 1004 | Motika  | London    | 0.11 | 2007 | Pereira  | Rome     |    100 | 1004 |
+| 1007 | Rifkin  | Barcelona | 0.15 | 2008 | Cisneros | San Jose |    300 | 1007 |
++------+---------+-----------+------+------+----------+----------+--------+------+
+mysql> select *from customer b,orders c where b.cnum=c.cnum;
++------+----------+----------+--------+------+------+---------+------------+------+
+| cnum | cname    | city     | rating | snum | onum | amt     | odate      | cnum |
++------+----------+----------+--------+------+------+---------+------------+------+
+| 2001 | Hoffman  | London   |    100 | 1001 | 3003 |  767.19 | 1996-10-03 | 2001 |
+| 2002 | Giovanni | Rome     |    200 | 1003 | 3007 |   75.75 | 1996-10-04 | 2002 |
+| 2002 | Giovanni | Rome     |    200 | 1003 | 3009 | 1713.23 | 1996-10-04 | 2002 |
+| 2003 | Liu San  | Jose     |    200 | 1002 | 3005 | 5160.45 | 1996-10-03 | 2003 |
+| 2004 | Grass    | Berlin   |    300 | 1002 | 3010 | 1309.95 | 1996-10-06 | 2004 |
+| 2006 | Clemens  | London   |    100 | 1001 | 3008 | 4723.00 | 1996-10-05 | 2006 |
+| 2006 | Clemens  | London   |    100 | 1001 | 3011 | 9891.88 | 1996-10-06 | 2006 |
+| 2007 | Pereira  | Rome     |    100 | 1004 | 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 2008 | Cisneros | San Jose |    300 | 1007 | 3001 |   18.69 | 1996-10-03 | 2008 |
+| 2008 | Cisneros | San Jose |    300 | 1007 | 3006 | 1098.16 | 1996-10-03 | 2008 |
++------+----------+----------+--------+------+------+---------+------------+------+
+17...mysql> select s.snum,c.snum,  c.cnum,o.cnum,o.odate from salespeople s,customer c,orders o where s.snum=c.snum and c.cnum=o.cnum and odate='1996-10-03';
++------+------+------+------+------------+
+| snum | snum | cnum | cnum | odate      |
++------+------+------+------+------------+
+| 1007 | 1007 | 2008 | 2008 | 1996-10-03 |
+| 1004 | 1004 | 2007 | 2007 | 1996-10-03 |
+| 1001 | 1001 | 2001 | 2001 | 1996-10-03 |
+| 1002 | 1002 | 2003 | 2003 | 1996-10-03 |
+| 1007 | 1007 | 2008 | 2008 | 1996-10-03 |
+13.
+mysql> select cname from customer where city='San Jose' and rating>200;
++----------+
+| cname    |
++----------+
+| Cisn11...mysql> select a.sname ,b.cname,a.city  from salespeople a,customer b where a.city=b.city and a.snum=b.snum;
++-------+---------+--------+
+| sname | cname   | city   |
++-------+---------+--------+
+| Peel  | Hoffman | London |
+| Peel  | Clemens | London |
++-------+---------+--------+ 
+14..mysql> select sname ,comm from salespeople where city='london';
++--------+------+
+| sname  | comm |
++--------+------+
+| Peel   | 0.12 |
+| Motika | 0.11 |
+| Fran   | 0.26 |
++--------+------+
+15...mysql> select c.onum from orders c,customer b,salespeople a where a.snum=b.snum and b.cnum=c.cnum and a.sname='motika';
++------+
+| onum |
++------+
+| 3002 |
++------+
+20...mysql> select a.cname ,b.cname, a.rating from customer a,customer b where a.rating=b.rating and a.cname!=b.cname;
++----------+----------+--------+
+| cname    | cname    | rating |
++----------+----------+--------+
+| Clemens  | Hoffman  |    100 |
+| Pereira  | Hoffman  |    100 |
+| Liu San  | Giovanni |    200 |
+| Giovanni | Liu San  |    200 |
+| Cisneros | Grass    |    300 |
+| Hoffman  | Clemens  |    100 |
+| Pereira  | Clemens  |    100 |
+| Hoffman  | Pereira  |    100 |
+| Clemens  | Pereira  |    100 |
+| Grass    | Cisneros |    300 |
++----------+----------+--------+
+30....mysql> select a.sname,b.cname from salespeople a ,customer b where a.city=b.city;
++--------+----------+
+| sname  | cname    |
++--------+----------+
+| Peel   | Hoffman  |
+| Motika | Hoffman  |
+| Fran   | Hoffman  |
+| Peel   | Clemens  |
+| Motika | Clemens  |
+| Fran   | Clemens  |
+| Serres | Cisneros |
++--------+----------+
+29....+-------------+------+--------+
+| count(cnum) | snum | sname  |
++-------------+------+--------+
+|           2 | 1001 | Peel   |
+|           2 | 1002 | Serres |
++-------------+------+--------+
+39....mysql> select sum(o.amt),o.odate from salespeople s join customer c on s.snum=c.snum join orders o on c.cnum=o.cnum  group by o.odate order by sum(o.amt),odate desc;
++------------+------------+
+| sum(o.amt) | odate      |
++------------+------------+
+|    1788.98 | 1996-10-04 |
+|    4723.00 | 1996-10-05 |
+|    8944.59 | 1996-10-03 |
+|   11201.83 | 1996-10-06 |
++------------+------------+
+8...mysql> select snum,sname from salespeople a where (select count(*)from customer where snum=a.snum)>1;
++------+--------+
+| snum | sname  |
++------+--------+
+| 1001 | Peel   |
+| 1002 | Serres |
+6...mysql> select a.snum,sname,o.onum,o.amt,o.odate from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum;
+ERROR 1054 (42S22): Unknown column 'o.onum' in 'field list'
+mysql> select a.snum,sname,c.onum,c.amt,c.odate from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum;
++------+---------+------+---------+------------+
+| snum | sname   | onum | amt     | odate      |
++------+---------+------+---------+------------+
+| 1001 | Peel    | 3003 |  767.19 | 1996-10-03 |
+| 1001 | Peel    | 3008 | 4723.00 | 1996-10-05 |
+| 1001 | Peel    | 3011 | 9891.88 | 1996-10-06 |
+| 1002 | Serres  | 3005 | 5160.45 | 1996-10-03 |
+| 1002 | Serres  | 3010 | 1309.95 | 1996-10-06 |
+| 1003 | AxelRod | 3007 |   75.75 | 1996-10-04 |
+| 1003 | AxelRod | 3009 | 1713.23 | 1996-10-04 |
+| 1004 | Motika  | 3002 | 1900.10 | 1996-10-03 |
+| 1007 | Rifkin  | 3001 |   18.69 | 1996-10-03 |
+| 1007 | Rifkin  | 3006 | 1098.16 | 1996-10-03 |
++------+---------+------+---------+------------+
+5....mysql> select cnum from orders Order by cnum desc;
++------+
+| cnum |
++------+
+| 2008 |
+| 2008 |
+| 2007 |
+| 2006 |
+| 2006 |
+| 2004 |
+| 2003 |
+| 2002 |
+| 2002 |
+| 2001 |
++------+
+3...mysql> select cnum,cname,city,rating ,snum from customer where city='null';
+Empty set (0.00 sec)
+17...mysql> select sum(o.amt),o.odate from orders o group by o.odate having sum(o.amt)>2000;
++------------+------------+
+| sum(o.amt) | odate      |
++------------+------------+
+|    8944.59 | 1996-10-03 |
+|    4723.00 | 1996-10-05 |
+|   11201.83 | 1996-10-06 |
++------------+------------+
+18....mysql> select onum,amt,odate from orders where amt  >( select min(amt)from orders where odate='1996-10-06');
++------+---------+------------+
+| onum | amt     | odate      |
++------+---------+------------+
+| 3002 | 1900.10 | 1996-10-03 |
+| 3005 | 5160.45 | 1996-10-03 |
+| 3008 | 4723.00 | 1996-10-05 |
+| 3009 | 1713.23 | 1996-10-04 |
+| 3011 | 9891.88 | 1996-10-06 |
++------+---------+------------+
+31...mysql> select cname from customer where city in (select city from customer where snum=1002);
++----------+
+| cname    |
++----------+
+| Liu      |
+| Grass    |
+| Cisneros |
++----------+
+32... select onum,amt,odate from orders where cnum=(select cnum from customer where cname='cisneros');
++------+---------+------------+
+| onum | amt     | odate      |
++------+---------+------------+
+| 3001 |   18.69 | 1996-10-03 |
+| 3006 | 1098.16 | 1996-10-03 |
++------+---------+------------+
+33....mysql> select c.onum,c.odate,c.amt from orders c where c.cnum in(select b.cnum from customer b where b.snum in(select a.snum from salespeople a where( a.sname='Serres' or a.sname= 'rifkin')));
++------+------------+---------+
+| onum | odate      | amt     |
++------+------------+---------+
+| 3005 | 1996-10-03 | 5160.45 |
+| 3010 | 1996-10-06 | 1309.95 |
+| 3001 | 1996-10-03 |   18.69 |
+| 3006 | 1996-10-03 | 1098.16 |
++------+------------+---------+
+34....mysql> select snum,sname,comm,city from salespeople;
++------+---------+------+-----------+
+| snum | sname   | comm | city      |
++------+---------+------+-----------+
+| 1001 | Peel    | 0.12 | London    |
+| 1002 | Serres  | 0.13 | San Jose  |
+| 1003 | AxelRod | 0.10 | New York  |
+| 1004 | Motika  | 0.11 | London    |
+| 1005 | Fran    | 0.26 | London    |
+| 1007 | Rifkin  | 0.15 | Barcelona |
++------+---------+------+-----------+
+35....mysql> select cname from customer where cname between 'A' and 'G';
++----------+
+| cname    |
++----------+
+| Clemens  |
+| Cisneros |
++----------+
+36....mysql> select a.cname,b.cname ,a.city from customer a,customer b where a.cname!=b.cname and a.city=b.city;
++----------+----------+----------+
+| cname    | cname    | city     |
++----------+----------+----------+
+| Clemens  | Hoffman  | London   |
+| Pereira  | Giovanni | Rome     |
+| Cisneros | Liu      | San Jose |
+| Hoffman  | Clemens  | London   |
+| Giovanni | Pereira  | Rome     |
+| Liu      | Cisneros | San Jose |
++----------+----------+----------+
+37...mysql> select c.amt from orders c where c.amt > (select avg(c.amt) from orders c where odate='1996-10-04');
++---------+
+| amt     |
++---------+
+| 1900.10 |
+| 5160.45 |
+| 1098.16 |
+| 4723.00 |
+| 1713.23 |
+| 1309.95 |
+| 9891.88 |
+39...mysql> select count(onum) as total,odate from orders group by odate order by count(onum) desc;
++-------+------------+
+| total | odate      |
++-------+------------+
+|     5 | 1996-10-03 |
+|     2 | 1996-10-04 |
+|     2 | 1996-10-06 |
+|     1 | 1996-10-05 |
++-------+------------+
+40....mysql> select cname,rating from customer where city='san jose';
++----------+--------+
+| cname    | rating |
++----------+--------+
+| Liu      |    200 |
+| Cisneros |    300 |
++----------+--------+
+4...mysql> select max(c.amt),c.odate,a.sname from orders c,salespeople a,customer b where a.snum=b.snum and b.cnum=c.cnum group by c.odate,c.cnum;
++------------+------------+---------+
+| max(c.amt) | odate      | sname   |
++------------+------------+---------+
+|     767.19 | 1996-10-03 | Peel    |
+|    5160.45 | 1996-10-03 | Serres  |
+|    1900.10 | 1996-10-03 | Motika  |
+|    1098.16 | 1996-10-03 | Rifkin  |
+|    1713.23 | 1996-10-04 | AxelRod |
+|    4723.00 | 1996-10-05 | Peel    |
+|    1309.95 | 1996-10-06 | Serres  |
+|    9891.88 | 1996-10-06 | Peel    |
++------------+------------+---------+mysql> select amt,odate,cnum from orders where amt < (select max(c.amt) from orders c,customer b where c.cnum=b.cnum and b.city='san jose');
++---------+------------+------+
+| amt     | odate      | cnum |
++---------+------------+------+
+|   18.69 | 1996-10-03 | 2008 |
+| 1900.10 | 1996-10-03 | 2007 |
+|  767.19 | 1996-10-03 | 2001 |
+| 1098.16 | 1996-10-03 | 2008 |
+|   75.75 | 1996-10-04 | 2002 |
+| 4723.00 | 1996-10-05 | 2006 |
+| 1713.23 | 1996-10-04 | 2002 |
+| 1309.95 | 1996-10-06 | 2004 |
++---------+------------+------+
+42..mysql> select onum,amt from orders where amt >(select avg(amt) from orders c,customer b  where  c.cnum=b.cnum);
++------+---------+
+| onum | amt     |
++------+---------+
+| 3005 | 5160.45 |
+| 3008 | 4723.00 |
+| 3011 | 9891.88 |
+43....mysql> select city,max(rating) from customer group by city;
++----------+-------------+
+| city     | max(rating) |
++----------+-------------+
+| Berlin   |         300 |
+| London   |         100 |
+| Rome     |         200 |
+| San Jose |         300 |
++----------+-------------+
+45..mysql>  select count(cnum) from customer where rating > (select avg(rating) from customer where city='san jose');
++-------------+
+| count(cnum) |
++-------------+
+|           2 |
++-------------+
+47..mysql> select snum,sname from salespeople where city='london' or city='barcelona';
++------+--------+
+| snum | sname  |
++------+--------+
+| 1001 | Peel   |
+| 1004 | Motika |
+| 1005 | Fran   |
+| 1007 | Rifkin |
++------+--------+
+48..mysql> select snum,sname from salespeople where snum in (select snum from customer group by snum having  count(snum)=1);
++------+---------+
+| snum | sname   |
++------+---------+
+| 1003 | AxelRod |
+| 1004 | Motika  |
+| 1007 | Rifkin  |
+49..mysql> select a.cnum,a.cname,b.cnum,b.cname,a.city,a.snum from customer a,customer b where a.cnum!=b.cnum and a.snum=b.snum;
++------+---------+------+---------+----------+------+
+| cnum | cname   | cnum | cname   | city     | snum |
++------+---------+------+---------+----------+------+
+| 2006 | Clemens | 2001 | Hoffman | London   | 1001 |
+| 2004 | Grass   | 2003 | Liu     | Berlin   | 1002 |
+| 2003 | Liu     | 2004 | Grass   | San Jose | 1002 |
+| 2001 | Hoffman | 2006 | Clemens | London   | 1001 |
++------+---------+------+---------+----------+------+
+50..mysql> select onum,amt from orders where amt>1000;
++------+---------+
+| onum | amt     |
++------+---------+
+| 3002 | 1900.10 |
+| 3005 | 5160.45 |
+| 3006 | 1098.16 |
+| 3008 | 4723.00 |
+| 3009 | 1713.23 |
+| 3010 | 1309.95 |
+| 3011 | 9891.88 |
++------+---------+
+51...mysql> select onum,cname,odate from orders a,customer b where a.cnum=b.cnum;
++------+----------+------------+
+| onum | cname    | odate      |
++------+----------+------------+
+| 3003 | Hoffman  | 1996-10-03 |
+| 3007 | Giovanni | 1996-10-04 |
+| 3009 | Giovanni | 1996-10-04 |
+| 3005 | Liu      | 1996-10-03 |
+| 3010 | Grass    | 1996-10-06 |
+| 3008 | Clemens  | 1996-10-05 |
+| 3011 | Clemens  | 1996-10-06 |
+| 3002 | Pereira  | 1996-10-03 |
+| 3001 | Cisneros | 1996-10-03 |
+| 3006 | Cisneros | 1996-10-03 |
++------+----------+------------+
+54...mysql> select onum,amt from orders where odate='1996-10-03' or odate='1996-10-04';
++------+---------+
+| onum | amt     |
++------+---------+
+| 3001 |   18.69 |
+| 3002 | 1900.10 |
+| 3003 |  767.19 |
+| 3005 | 5160.45 |
+| 3006 | 1098.16 |
+| 3007 |   75.75 |
+| 3009 | 1713.23 |
++---56..mysql> select cnum,cname from customer where rating > (select max(rating) from customer where city='rome');
++------+----------+
+| cnum | cname    |
++------+----------+
+| 2004 | Grass    |
+| 2008 | Cisneros |
++------+----------+
+---+---------+
+58...mysql> select *from customer where snum=1001;
++------+---------+--------+--------+------+
+| cnum | cname   | city   | rating | snum |
++------+---------+--------+--------+------+
+| 2001 | Hoffman | London |    100 | 1001 |
+| 2006 | Clemens | London |    100 | 1001 |
++------+---------+--------+--------+------+
+60...mysql> select amt from orders where amt=0;
+Empty set (0.00 sec)
+62...mysql> select a.snum,a.sname ,(a.comm * amt) as commission  from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum;
++------+---------+------------+
+| snum | sname   | commission |
++------+---------+------------+
+| 1001 | Peel    |    92.0628 |
+| 1001 | Peel    |   566.7600 |
+| 1001 | Peel    |  1187.0256 |
+| 1002 | Serres  |   670.8585 |
+| 1002 | Serres  |   170.2935 |
+| 1003 | AxelRod |     7.5750 |
+| 1003 | AxelRod |   171.3230 |
+| 1004 | Motika  |   209.0110 |
+| 1007 | Rifkin  |     2.8035 |
+| 1007 | Rifkin  |   164.7240 |
++------+-----
+63..mysql> select cname,city from customer where rating =(select rating from customer where cnum=(select cnum from customer where cname='hoffman'));
++---------+--------+
+| cname   | city   |
++---------+--------+
+| Hoffman | London |
+| Clemens | London |
+| Pereira | Rome   |
++---------+--------+
+----+------------+
+65..mysql> select cname,rating from customer a,orders b where amt > (select avg(amt) from orders ) and a.cnum=b.cnum;
++---------+--------+
+| cname   | rating |
++---------+--------+
+| Liu     |    200 |
+| Clemens |    100 |
+| Clemens |    100 |
++---------+--------+
+66...mysql> select sum(amt) from orders;
++----------+
+| sum(amt) |
++----------+
+| 26658.40 |
++----------+
+67....mysql> select odate,onum,amt from orders;
++------------+------+---------+
+| odate      | onum | amt     |
++------------+------+---------+
+| 1996-10-03 | 3001 |   18.69 |
+| 1996-10-03 | 3002 | 1900.10 |
+| 1996-10-03 | 3003 |  767.19 |
+| 1996-10-03 | 3005 | 5160.45 |
+| 1996-10-03 | 3006 | 1098.16 |
+| 1996-10-04 | 3007 |   75.75 |
+| 1996-10-05 | 3008 | 4723.00 |
+| 1996-10-04 | 3009 | 1713.23 |
+| 1996-10-06 | 3010 | 1309.95 |
+| 1996-10-06 | 3011 | 9891.88 |
++------------+------+---------+
+68....mysql> select count(rating) from customer where rating!='null';
++---------------+
+| count(rating) |
++---------------+
+|             7 |
++---------------+
+69....mysql> select sname,b.cname,odate from salespeople a,customer b,orders  c where a.snum=b.snum and b.cnum=c.cnum;
++---------+----------+------------+
+| sname   | cname    | odate      |
++---------+----------+------------+
+| Peel    | Hoffman  | 1996-10-03 |
+| AxelRod | Giovanni | 1996-10-04 |
+| AxelRod | Giovanni | 1996-10-04 |
+| Serres  | Liu      | 1996-10-03 |
+| Serres  | Grass    | 1996-10-06 |
+| Peel    | Clemens  | 1996-10-05 |
+| Peel    | Clemens  | 1996-10-06 |
+| Motika  | Pereira  | 1996-10-03 |
+| Rifkin  | Cisneros | 1996-10-03 |
+| Rifkin  | Cisneros | 1996-10-03 |
++---------+----------+------------+
+70..mysql> select a.sname,(comm * amt) as totalcommission from salespeople a ,customer b, orders c where a.snum=b.snum and b.cnum=c.cnum;
++---------+-----------------+
+| sname   | totalcommission |
++---------+-----------------+
+| Peel    |         92.0628 |
+| Peel    |        566.7600 |
+| Peel    |       1187.0256 |
+| Serres  |        670.8585 |
+| Serres  |        170.2935 |
+| AxelRod |          7.5750 |
+| AxelRod |        171.3230 |
+| Motika  |        209.0110 |
+| Rifkin  |          2.8035 |
+| Rifkin  |        164.7240 |
++---------+-----------------+
+71...mysql> select sname from salespeople a, customer b where a.city!=b.city and a.snum=b.snum;
++---------+
+| sname   |
++---------+
+| AxelRod |
+| Serres  |
+| Motika  |
+| Rifkin  |
++---------+
+73....mysql> select b.cname from customer b,salespeople a where a.snum=b.snum and a.sname='motika' or a.sname='peel' group by b.cname;
++----------+
+| cname    |
++----------+
+| Cisneros |
+| Clemens  |
+| Giovanni |
+| Grass    |
+| Hoffman  |
+| Liu      |
+| Pereira  |
++----------+
+74...mysql> select count(distinct(a.snum)),c.odate from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum group by c.odate; +-------------------------+------------+
+| count(distinct(a.snum)) | odate      |
++-------------------------+------------+
+|                       4 | 1996-10-03 |
+|                       1 | 1996-10-04 |
+|                       1 | 1996-10-05 |
+|                       2 | 1996-10-06 |
++-------------------------+------------+
+75...mysql> select onum from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum and a.city='london';
++------+
+| onum |
++------+
+| 3003 |
+| 3008 |
+| 3011 |
+| 3002 |
++------+
+76...mysql> select onum from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum and a.city!=b.city;
++------+
+| onum |
++------+
+| 3007 |
+| 3009 |
+| 3010 |
+| 3002 |
+| 3001 |
+| 3006 |
++------+
+77....mysql> select sname from salespeople  where snum in(select snum from customer where cnum in(select cnum from orders  group by cnum having count(odate)>1));
++---------+
+| sname   |
++---------+
+| Peel    |
+| AxelRod |
+| Rifkin  |
++---------+
+
+79...mysql> select cname from customer where substring(cname,1,1) like 'c';
++----------+
+| cname    |
++----------+
+| Clemens  |
+| Cisneros |
++----------+
+81....mysql> select distinct(snum) from customer a,orders b where a.cnum=b.cnum;
++------+
+| snum |
++------+
+| 1001 |
+| 1002 |
+| 1003 |
+| 1004 |
+| 1007 |
++------+
+82...mysql> select rating,cname,cnum from customer order by rating desc;
++--------+----------+------+
+| rating | cname    | cnum |
++--------+----------+------+
+|    300 | Grass    | 2004 |
+|    300 | Cisneros | 2008 |
+|    200 | Giovanni | 2002 |
+|    200 | Liu      | 2003 |
+|    100 | Hoffman  | 2001 |
+|    100 | Clemens  | 2006 |
+|    100 | Pereira  | 2007 |
++--------+----------+------+
+83....mysql> select avg(comm) from salespeople where city='london';
++-----------+
+| avg(comm) |
++-----------+
+|  0.163333 |
+84...mysql> select odate,amt,cnum,onum from orders where cnum in(select cnum from customer where snum in(select snum from customer where cname='hoffman'));
++------------+---------+------+------+
+| odate      | amt     | cnum | onum |
++------------+---------+------+------+
+| 1996-10-03 |  767.19 | 2001 | 3003 |
+| 1996-10-05 | 4723.00 | 2006 | 3008 |
+| 1996-10-06 | 9891.88 | 2006 | 3011 |
++------------+---------+------+------+
+85...mysql> select *from salespeople where comm between 0.10 and 0.12;
++------+---------+----------+------+
+| snum | sname   | city     | comm |
++------+---------+----------+------+
+| 1001 | Peel    | London   | 0.12 |
+| 1003 | AxelRod | New York | 0.10 |
+| 1004 | Motika  | London   | 0.11 |
++------+---------+----------+------+
+86...mysql> select sname ,city from salespeople where city='london' and comm>0.10;
++--------+--------+
+| sname  | city   |
++--------+--------+
+| Peel   | London |
+| Motika | London |
+| Fran   | London |
++--------+--------+
+
++-----------+
+87...mysql> select *from orders where (amt < 1000 OR NOT (odate = 10/03/1996 AND cnum > 2003));
++------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3001 |   18.69 | 1996-10-03 | 2008 |
+| 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 3003 |  767.19 | 1996-10-03 | 2001 |
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
+| 3006 | 1098.16 | 1996-10-03 | 2008 |
+| 3007 |   75.75 | 1996-10-04 | 2002 |
+| 3008 | 4723.00 | 1996-10-05 | 2006 |
+| 3009 | 1713.23 | 1996-10-04 | 2002 |
+| 3010 | 1309.95 | 1996-10-06 | 2004 |
+| 3011 | 9891.88 | 1996-10-06 | 2006 |
++------+---------+------------+------+
+88....mysql> select min(amt),a.cnum,b.cname from orders a,customer b where a.cnum=b.cnum group by a.cnum;
++----------+------+----------+
+| min(amt) | cnum | cname    |
++----------+------+----------+
+|   767.19 | 2001 | Hoffman  |
+|    75.75 | 2002 | Giovanni |
+|  5160.45 | 2003 | Liu      |
+|  1309.95 | 2004 | Grass    |
+|  4723.00 | 2006 | Clemens  |
+|  1900.10 | 2007 | Pereira  |
+|    18.69 | 2008 | Cisneros |
++----------+------+----------+
+89...mysql> select cname from customer where substring(cname,1,1) like'g';
++----------+
+| cname    |
++----------+
+| Giovanni |
+| Grass    |
++----------+
+90...mysql> select count(distinct(city)) from customer where city is not null;
++-----------------------+
+| count(distinct(city)) |
++-----------------------+
+|                     4 |
++-----------------------+
+91...mysql> select avg(amt) from orders ;
++-------------+
+| avg(amt)    |
++-------------+
+| 2665.840000 |
++-------------+
+92....mysql> select *from orders where  odate ='1996-10-03'and amt >= 1500;
++------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
++------+---------+------------+------+
+93..mysql> select cname,cnum from customer where city!='san jose' and rating>200;
++-------+------+
+| cname | cnum |
++-------+------+
+| Grass | 2004 |
++-------+------+
+94...mysql> select *from salespeople where comm>0.12 or comm<0.14;
++------+---------+-----------+------+
+| snum | sname   | city      | comm |
++------+---------+-----------+------+
+| 1001 | Peel    | London    | 0.12 |
+| 1002 | Serres  | San Jose  | 0.13 |
+| 1003 | AxelRod | New York  | 0.10 |
+| 1004 | Motika  | London    | 0.11 |
+| 1005 | Fran    | London    | 0.26 |
+| 1007 | Rifkin  | Barcelona | 0.15 |
++------+---------+-----------+------+
+95...mysql> select *from orders where  odate ='1996-10-03' and amt > 2000.00;
++------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
++------+---------+------------+------+
+96...mysql> select a.snum,a.sname,a.city,b.city from salespeople a,customer b where a.snum=b.snum and a.city!=b.city;
++------+---------+-----------+----------+
+| snum | sname   | city      | city     |
++------+---------+-----------+----------+
+| 1003 | AxelRod | New York  | Rome     |
+| 1002 | Serres  | San Jose  | Berlin   |
+| 1004 | Motika  | London    | Rome     |
+| 1007 | Rifkin  | Barcelona | San Jose |
++------+---------+-----------+----------+
+97..mysql> select a.snum,a.sname,a.comm,b.rating from salespeople a,customer b where comm>0.11 and rating <250 and a.snum=b.snum;
++------+--------+------+--------+
+| snum | sname  | comm | rating |
++------+--------+------+--------+
+| 1001 | Peel   | 0.12 |    100 |
+| 1002 | Serres | 0.13 |    200 |
+| 1001 | Peel   | 0.12 |    100 |
++------+--------+------+--------+
+98...mysql> select a.snum,b.sname from salespeople a,salespeople b where a.city=b.city and a.comm!=b.comm;
++------+--------+
+| snum | sname  |
++------+--------+
+| 1004 | Peel   |
+| 1005 | Peel   |
+| 1001 | Motika |
+| 1005 | Motika |
+| 1001 | Fran   |
+| 1004 | Fran   |
++------+--------+
+99...mysql> select a.snum,a.sname,(comm * amt) from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum order by comm desc;
++------+---------+--------------+
+| snum | sname   | (comm * amt) |
++------+---------+--------------+
+| 1007 | Rifkin  |       2.8035 |
+| 1007 | Rifkin  |     164.7240 |
+| 1002 | Serres  |     670.8585 |
+| 1002 | Serres  |     170.2935 |
+| 1001 | Peel    |      92.0628 |
+| 1001 | Peel    |     566.7600 |
+| 1001 | Peel    |    1187.0256 |
+| 1004 | Motika  |     209.0110 |
+| 1003 | AxelRod |       7.5750 |
+| 1003 | AxelRod |     171.3230 |
++------+---------+--------------+
+100...mysql> select a.cnum,a.cname,count(onum) as total,a.rating from customer a,orders b where a.cnum=b.cnum group by a.cnum,a.cname order by total desc;
++------+----------+-------+--------+
+| cnum | cname    | total | rating |
++------+----------+-------+--------+
+| 2006 | Clemens  |     2 |    100 |
+| 2002 | Giovanni |     2 |    200 |
+| 2008 | Cisneros |     2 |    300 |
+| 2001 | Hoffman  |     1 |    100 |
+| 2007 | Pereira  |     1 |    100 |
+| 2003 | Liu      |     1 |    200 |
+| 2004 | Grass    |     1 |    300 |
++-----+----------+-------+--------+
+
+101...mysql> select  a.cnum,a.cname,a.rating,sum(b.amt) as total from customer a,orders b where a.cnum=b.cnum group by a.cnum,a.cname,a.rating order by total desc;
++------+----------+--------+----------+
+| cnum | cname    | rating | total    |
++------+----------+--------+----------+
+| 2006 | Clemens  |    100 | 14614.88 |
+| 2003 | Liu      |    200 |  5160.45 |
+| 2007 | Pereira  |    100 |  1900.10 |
+| 2002 | Giovanni |    200 |  1788.98 |
+| 2004 | Grass    |    300 |  1309.95 |
+| 2008 | Cisneros |    300 |  1116.85 |
+| 2001 | Hoffman  |    100 |   767.19 |
++------+----------+--------+----------+
+102...mysql> select cname,rating from customer order by rating desc;
++----------+--------+
+| cname    | rating |
++----------+--------+
+| Grass    |    300 |
+| Cisneros |    300 |
+| Giovanni |    200 |
+| Liu      |    200 |
+| Hoffman  |    100 |
+| Clemens  |    100 |
+| Pereira  |    100 |
++----------+--------+
+103...mysql> select odate from orders a,customer b where a.cnum=b.cnum and b.cname='hoffman';
++------------+
+| odate      |
++------------+
+| 1996-10-03 |
++------------+
+104...mysql> select a.snum,b.snum,a.sname,b.sname,a.comm from salespeople a,salespeople b where a.comm=b.comm and a.snum!=b.snum;
+Empty set (0.00 sec)
+
+106.mysql> select count(distinct(snum)) from customer ;
++-----------------------+
+| count(distinct(snum)) |
++-----------------------+
+|                     5 |
++-----------------------+
+
+107..mysql> select count(distinct(cnum)) from orders;
++-----------------------+
+| count(distinct(cnum)) |
++-----------------------+
+|                     7 |
++-----------------------+
+109..mysql> select a.snum,a.sname,sum(c.amt) as total from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum group by a.snum,a.sname;
++------+---------+----------+
+| snum | sname   | total    |
++------+---------+----------+
+| 1001 | Peel    | 15382.07 |
+| 1002 | Serres  |  6470.40 |
+| 1003 | AxelRod |  1788.98 |
+| 1004 | Motika  |  1900.10 |
+| 1007 | Rifkin  |  1116.85 |
++------+---------+----------+
+110...mysql> select b.cname,sum(c.amt) from customer b,orders c where b.cnum=c.cnum group by b.cnum,b.cname order by sum(c.amt) desc;
++----------+------------+
+| cname    | sum(c.amt) |
++----------+------------+
+| Clemens  |   14614.88 |
+| Liu      |    5160.45 |
+| Pereira  |    1900.10 |
+| Giovanni |    1788.98 |
+| Grass    |    1309.95 |
+| Cisneros |    1116.85 |
+| Hoffman  |     767.19 |
++----------+------------+
+112...mysql> select a.cname,b.cname,a.rating from customer a,customer b where a.rating=b.rating and a.cname!=b.cname;
++----------+----------+--------+
+| cname    | cname    | rating |
++----------+----------+--------+
+| Clemens  | Hoffman  |    100 |
+| Pereira  | Hoffman  |    100 |
+| Liu      | Giovanni |    200 |
+| Giovanni | Liu      |    200 |
+| Cisneros | Grass    |    300 |
+| Hoffman  | Clemens  |    100 |
+| Pereira  | Clemens  |    100 |
+| Hoffman  | Pereira  |    100 |
+| Clemens  | Pereira  |    100 |
+| Grass    | Cisneros |    300 |
++----------+----------+--------+
+113...mysql> select onum,amt from orders where amt >(select avg(amt) from orders where odate='1996-10-04');
++------+---------+
+| onum | amt     |
++------+---------+
+| 3002 | 1900.10 |
+| 3005 | 5160.45 |
+| 3006 | 1098.16 |
+| 3008 | 4723.00 |
+| 3009 | 1713.23 |
+| 3010 | 1309.95 |
+| 3011 | 9891.88 |
++------+---------+
+114....mysql> select cnum,cname from customer where cnum in(select cnum from orders where amt >(select avg(amt) from orders));
++------+---------+
+| cnum | cname   |
++------+---------+
+| 2003 | Liu     |
+| 2006 | Clemens |
++------+---------+
+115...mysql> select cname from customer where rating >(select avg(rating) from customer where city='san jose');
++----------+
+| cname    |
++----------+
+| Grass    |
+| Cisneros |
++----------+
+116..mysql> select a.snum,a.sname,sum(c.amt)  as total from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum group by a.snum,a.sname having total > (select max(amt) from orders);
++------+-------+----------+
+| snum | sname | total    |
++------+-------+----------+
+| 1001 | Peel  | 15382.07 |
++------+-------+----------+
+1) 
+describe salespeople;
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| snum  | int(11)      | NO   | PRI | NULL    |       |
+| sname | varchar(30)  | NO   |     | NULL    |       |
+| city  | varchar(30)  | NO   |     | NULL    |       |
+| comm  | decimal(4,2) | NO   |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+
+2)
+
+ select cname from customer where rating=100;
+
+output: +---------+
+| cname   |
++---------+
+| Hoffman |
+| Clemens |
+| Pereira |
++---------+
+
+3).
+select * from customer where city=null;
+
+
+
+4
+select a.snum,a.sname,c.odate,max(c.amt) from salespeople a, customer b, orders c where a.snum=b.snum and b.cnum=c.cnum group by a.snum,a.sname,c.odate;
++------+----------+------------+------------+
+| snum | sname    | odate      | max(c.amt) |
++------+----------+------------+------------+
+| 1001 | peel     | 1996-10-03 |     767.19 |
+| 1001 | peel     | 1996-10-05 |    4723.00 |
+| 1001 | peel     | 1996-10-06 |    9891.88 |
+| 1002 | Serres   | 1996-10-03 |    5160.45 |
+| 1002 | Serres   | 1996-10-06 |    1309.95 |
+| 1003 | Axel Rod | 1996-10-04 |    1713.23 |
+| 1004 | Motika   | 1996-10-03 |    1900.10 |
+| 1007 | Rifkin   | 1996-10-03 |    1098.16 |
++------+----------+------------+------------+
+
+select max(amt),a.snum,b.cnum,odate from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum = c.cnum group by odate,cnum;
+
+
++----------+------+------+------------+
+| max(amt) | snum | cnum | odate      |
++----------+------+------+------------+
+|   767.19 | 1001 | 2001 | 1996-10-03 |
+|  5160.45 | 1002 | 2003 | 1996-10-03 |
+|  1900.10 | 1004 | 2007 | 1996-10-03 |
+|  1098.16 | 1007 | 2008 | 1996-10-03 |
+|  1713.23 | 1003 | 2002 | 1996-10-04 |
+|  4723.00 | 1001 | 2006 | 1996-10-05 |
+|  1309.95 | 1002 | 2004 | 1996-10-06 |
+|  9891.88 | 1001 | 2006 | 1996-10-06 |
++----------+------+------+------------+
+5 
+
+ select * from orders order by cnum desc;
+ +------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3001 |   18.69 | 1996-10-03 | 2008 |
+| 3006 | 1098.16 | 1996-10-03 | 2008 |
+| 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 3008 | 4723.00 | 1996-10-05 | 2006 |
+| 3011 | 9891.88 | 1996-10-06 | 2006 |
+| 3010 | 1309.95 | 1996-10-06 | 2004 |
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
+| 3007 |   75.75 | 1996-10-04 | 2002 |
+| 3009 | 1713.23 | 1996-10-04 | 2002 |
+| 3003 |  767.19 | 1996-10-03 | 2001 |
++------+---------+------------+-----
+6..select distinct sname from salespeople a, customer b, orders c where a.snum=b.snum and b.cnum = c.cnum;
+
+ +----------+
+| sname    |
++----------+
+|  Peel    |
+|  Serres  |
+|  AxelRod |
+|  Motika  |
+|  Rifkin  |
++----------+
+
+
+7)select cname from salespeople a, customer b where a.snum=b.snum and sname=cname;
+
+Empty set (0.00 sec)
+
+8)stomer.
+ select snum,sname
+    -> from salespeople a
+    -> where 1<( select count(*) from customer where snum = a.snum);
+
++------+---------+
+| snum | sname   |
++------+---------+
+| 1001 | Peel    |
+| 1002 |  Serres |
++------+---------+
+2 rows in set (0.00 sec)
+
+9) 
+
+select count(onum),a.snum from salespeople a,customer b,orders c where a.snum=b.snum  and b.cnum=c.cnum group by a.snum;
++-------------+------+
+| count(onum) | snum |
++-------------+------+
+|           3 | 1001 |
+|           2 | 1002 |
+|           2 | 1003 |
+|           1 | 1004 |
+|           2 | 1007 |
++-------------+------+
+5 rows in set (0.00 sec)
+
+
+
+10
+select * from customer where 0<(select count(*) from customer where city='San Jose');
+
+: +------+----------+----------+--------+------+
+| cnum | cname    | city     | rating | snum |
++------+----------+----------+--------+------+
+| 2001 | Hoffman  | London   |    100 | 1001 |
+| 2002 | Giovanni | Rome     |    200 | 1003 |
+| 2003 | Liu      | San Jose |    200 | 1002 |
+| 2004 | Grass    | Berlin   |    300 | 1002 |
+| 2006 | Clemens  | London   |    100 | 1001 |
+| 2007 | Pereira  | Rome     |    100 | 1004 |
+| 2008 | Cisneros | San Jose |    300 | 1007 |
++------+----------+----------+--------+------+
+
+
+*11) select sname,cname,a.city from salespeople a, customer b where a.snum=b.snum and a.city=b.city;
+
+Output:+--------+---------+----------+
+| sname  | cname   | city     |
++--------+---------+----------+
+| peel   | Hoffman | London   |
+| Serres | Liu     | San Jose |
+| peel   | Clemens | London   |
++--------+---------+----------+
+3 rows in set (0.00 sec)
+
+
+12)
+select a.snum,a.sname,max(c.amt) from salespeople a, customer b, orders c where a.snum=b.snum and b.cnum=c.cnum group by a.snum,a.sname;
++------+----------+------------+
+| snum | sname    | max(c.amt) |
++------+----------+------------+
+| 1001 | peel     |    9891.88 |
+| 1002 | Serres   |    5160.45 |
+| 1003 | Axel Rod |    1713.23 |
+| 1004 | Motika   |    1900.10 |
+| 1007 | Rifkin   |    1098.16 |
++------+----------+------------+
+
+13)
+ select cnum,cname from customer where city ='San Jose' and rating > 200 +------+----------+
+| cnum | cname    |
++------+----------+
+| 2008 | Cisneros |
++------+----------+
+
+14) select sname, comm from salespeople where city=London; +---------+------+
+| sname   | comm |
++---------+------+
+|  Peel   | 0.12 |
+|  Motika | 0.11 |
+|  Fran   | 0.26 |
+
+15)
+select onum,amt,odate from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum=c.cnum and sname=' Motika';
+ +------+---------+------------+
+| onum | amt     | odate      |
++------+---------+------------+
+| 3002 | 1900.10 | 1996-10-03 |
++------+---------+------------+
+1 row in set (0.00 sec)
+
+
+
+16)select distinct cname from orders a,customer b where a.cnum=b.cnum and odate='1996-10-03';
+
+ +----------+
+| cname    |
++----------+
+| Cisneros |
+| Pereira  |
+| Hoffman  |
+| Liu      |
++----------+
+
+
+17) 
+select odate,sum(amt) as total from orders group by odate having total > (select max(amt) from orders);
++------------+----------+
+| odate      | total    |
++------------+----------+
+| 1996-10-06 | 11201.83 |
++------------+----------+
+
+18)select * from orders where odate!='1996-10-06' and amt > (select min(amt) from orders where odate='1996-10-06');
+
+Output: +------+---------+------------+------+
+| onum | amt     | odate      | cnum |
++------+---------+------------+------+
+| 3002 | 1900.10 | 1996-10-03 | 2007 |
+| 3005 | 5160.45 | 1996-10-03 | 2003 |
+| 3008 | 4723.00 | 1996-10-05 | 2006 |
+| 3009 | 1713.23 | 1996-10-04 | 2002 |
++------+---------+------------+------+
+
+
+19) select sname from salespeople a where exists (select b.snum from customer b where b.rating =300 and a.snum = b.snum);
++--------+
+| sname  |
++--------+
+| Serres |
+| Rifkin |
++--------+
+20)select a.cname,b.cname,a.rating from customer a,customer b where a.rating=b.rating and a.cnum!=b.cnum;
++----------+----------+--------+
+| cname    | cname    | rating |
++----------+----------+--------+
+| Clemens  | Hoffman  |    100 |
+| Pereira  | Hoffman  |    100 |
+| Liu      | Giovanni |    200 |
+| Giovanni | Liu      |    200 |
+| Cisneros | Grass    |    300 |
+| Hoffman  | Clemens  |    100 |
+| Pereira  | Clemens  |    100 |
+| Hoffman  | Pereira  |    100 |
+| Clemens  | Pereira  |    100 |
+| Grass    | Cisneros |    300 |
++----------+----------+--------+
+
+
+21)select cnum,cname from customer a where (cnum-1000) > (select snum from salespeople a where sname='serres'); +------+----------+
+| cnum | cname    |
++------+----------+
+| 2003 | Liu      |
+| 2004 | Grass    |
+| 2006 | Clemens  |
+| 2007 | Pereira  |
+| 2008 | Cisneros |
++------+----------+
+22
+ select sname,concat(comm *100,'%') as comm_percent from salespeople;
+
+
++----------+--------------+
+| sname    | comm_percent |
++----------+--------------+
+| peel     | 12.00%       |
+| Serres   | 13.00%       |
+| Axel Rod | 10.00%       |
+| Motika   | 11.00%       |
+| Fran     | 26.00%       |
+| Rifkin   | 15.00%       |
++----------+--------------+
+
+
+23)
+select max(amt),a.snum,b.cnum,odate from salespeople a,customer b,orders c where a.snum=b.snum and b.cnum = c.cnum group by odate,cnum having max(amt) >3000;
+
++----------+------+------+------------+
+| max(amt) | snum | cnum | odate      |
++----------+------+------+------------+
+|  5160.45 | 1002 | 2003 | 1996-10-03 |
+|  4723.00 | 1001 | 2006 | 1996-10-05 |
+|  9891.88 | 1001 | 2006 | 1996-10-06 |
++----------+------+------+------------+
+24)
+select odate,a.snum,a.sname,max(amt) from salespeople a, customer b, orders c where a.snum=b.snum and b.cnum=c.cnum and odate='1996-10-03' group by odate,a.snum order by odate,a.snum;
+ +------------+------+--------+----------+
+| odate      | snum | sname  | max(amt) |
++------------+------+--------+----------+
+| 1996-10-03 | 1001 | peel   |   767.19 |
+| 1996-10-03 | 1002 | Serres |  5160.45 |
+| 1996-10-03 | 1004 | Motika |  1900.10 |
+| 1996-10-03 | 1007 | Rifkin |  1098.16 |
++------------+------+--------+----------+
+
+
+25)  select cname,b.city from salespeople a, customer b where a.snum=b.snum and b.snum = (select snum from salespeople where sname='Serres'): +-------+----------+
+| cname | city     |
++-------+----------+
+| Liu   | San Jose |
+| Grass | Berlin   |
++-------+----------+
+
+26) select cnum,cname from customer where rating>200;
+
++------+----------+
+| cnum | cname    |
++------+----------+
+| 2004 | Grass    |
+| 2008 | Cisneros |
++------+----------+
